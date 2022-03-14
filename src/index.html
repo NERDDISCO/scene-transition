@@ -19,18 +19,17 @@
 	
 			varying vec2 vUv;
 	
-			#define M_PI 3.14159265358979323846
-	
 			void main(void) {
 				// Load the textures
 				vec4 scene1 = texture2D(texture1, vUv);
 				vec4 scene2 = texture2D(texture2, vUv);
 
-				// Split the screen into two halves
+				// Split the screen into two halves and 
+				// mix scene1 with scene2 based on the given progress
 				if (vUv.y < .5) {
-					gl_FragColor = mix(scene2, scene1, progress);
+					gl_FragColor = mix(scene2, scene1, abs(progress));
 				} else {
-					gl_FragColor = mix(scene1, scene2, progress);
+					gl_FragColor = mix(scene1, scene2, abs(progress));
 				}
 			}
 		</script>
