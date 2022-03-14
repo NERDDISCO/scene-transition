@@ -104,7 +104,6 @@ icosahedron.rotation.set(Math.PI * 1.25, Math.PI * 1.25, 0)
 scene2.add(icosahedron)
 
 const ambientLight2 = new THREE.AmbientLight(0xffffff, 1.0)
-const spotLight = new THREE.SpotLight(0xffffff, 1.0)
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6)
 directionalLight.castShadow = true
 directionalLight.shadow.mapSize.set(1024, 1024)
