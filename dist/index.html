@@ -1,0 +1,31 @@
+<!doctype html><html lang="en"><head><title>Transition between scene1 and scene2 using a mainScreen</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,user-scalable=no,minimum-scale=1,maximum-scale=1"><script defer="defer" src="bundle.c77f3792654be416.js"></script><link href="main.css" rel="stylesheet"></head><body><canvas class="webgl"></canvas><script id="fragmentShader" type="x-shader/x-fragment">uniform float time;
+	
+			uniform sampler2D texture1;
+			uniform sampler2D texture2;
+			
+			uniform float progress;
+	
+			varying vec2 vUv;
+	
+			#define M_PI 3.14159265358979323846
+	
+			void main(void) {
+				// Load the textures
+				vec4 scene1 = texture2D(texture1, vUv);
+				vec4 scene2 = texture2D(texture2, vUv);
+
+				// Split the screen into two halves
+				if (vUv.y < .5) {
+					gl_FragColor = mix(scene2, scene1, progress);
+				} else {
+					gl_FragColor = mix(scene1, scene2, progress);
+				}
+			}</script><script id="vertexShader" type="x-shader/x-vertex">uniform vec2 uvScale;
+			varying vec2 vUv;
+			uniform float time;
+	
+			void main() {
+				vUv = uvScale * uv;
+				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+				gl_Position = projectionMatrix * mvPosition;
+			}</script></body></html>
