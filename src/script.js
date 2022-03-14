@@ -58,10 +58,11 @@ const mainScreenGeometry = new THREE.PlaneBufferGeometry(10, 10)
 const mainScreenMaterial = new THREE.ShaderMaterial({
     uniforms: mainScreenUniforms,
     vertexShader: document.getElementById('vertexShader').textContent,
-    fragmentShader: document.getElementById('fragmentShader').textContent
+    fragmentShader: document.getElementById('fragmentShader').textContent,
 });
 const mainScreen = new THREE.Mesh(mainScreenGeometry, mainScreenMaterial)
 mainScreen.rotation.set(Math.PI * 1, Math.PI * 1, 0)
+mainScreen.material.side = THREE.DoubleSide
 mainScene.add(mainScreen)
 
 
@@ -82,7 +83,7 @@ const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
 cube.rotation.set(Math.PI * 1.25, Math.PI * 1.25, 0)
 scene1.add(cube)
 
-const ambientLight1 = new THREE.AmbientLight(0xffffff, 1.0)
+const ambientLight1 = new THREE.AmbientLight(0xffffff, .50)
 scene1.add(ambientLight1)
 
 
@@ -103,8 +104,8 @@ const icosahedron = new THREE.Mesh(icosahedronGeometry, icosahedronMaterial)
 icosahedron.rotation.set(Math.PI * 1.25, Math.PI * 1.25, 0)
 scene2.add(icosahedron)
 
-const ambientLight2 = new THREE.AmbientLight(0xffffff, 1.0)
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6)
+const ambientLight2 = new THREE.AmbientLight(0xffffff, 0.2)
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8)
 directionalLight.castShadow = true
 directionalLight.shadow.mapSize.set(1024, 1024)
 directionalLight.shadow.camera.far = 15
