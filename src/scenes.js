@@ -5,7 +5,7 @@ export function generateScene1({
     cameraZ
 }) {
     const scene1 = new THREE.Scene()
-    scene1.background = new THREE.Color(0xffffff);
+    // scene1.background = new THREE.Color(0xffffff);
     const camera1 = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 3000);
     camera1.position.z = cameraZ;
     const cubeGeometry = new THREE.BoxBufferGeometry(2.5, 2.5, 2.5)
@@ -70,7 +70,7 @@ export function generateScene2({
     cameraZ
 }) {
     const scene2 = new THREE.Scene()
-    scene2.background = new THREE.Color(0xffffff);
+    // scene2.background = new THREE.Color(0xffffff);
     const camera2 = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 3000);
     camera2.position.z = cameraZ;
     const icosahedronGeometry = new THREE.IcosahedronBufferGeometry(1, 2)
