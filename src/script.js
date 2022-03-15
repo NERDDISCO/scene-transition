@@ -4,18 +4,61 @@ import {
     OrbitControls
 } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
+import { generateScene1, generateScene2 } from './scenes.js'
+import halfwayFade from './shaders/halfwayFade.fs'
+import crosswarp from './shaders/crosswarp.fs'
+import morph from './shaders/morph.fs'
+import colordistance from './shaders/colordistance.fs'
+import cubeee from './shaders/cube.fs'
+import wave from './shaders/wave.fs'
+
+const cameraZ = 15
 
 const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
-
 const textureLoader = new THREE.TextureLoader()
 const canvas = document.querySelector('canvas.webgl')
-const cameraZ = 5
-
 const texture1 = new THREE.WebGLRenderTarget(sizes.width, sizes.height)
 const texture2 = new THREE.WebGLRenderTarget(sizes.width, sizes.height)
+
+// Debug
+const gui = new dat.GUI()
+const settings = {
+    transition: 'halfwayFade',
+    progress: 0.0,
+}
+gui.add(settings, 'transition', ['halfwayFade', 'crosswarp', 'morph', 'colordistance', 'cube', 'wave'])
+    .onChange((option) => {
+
+        switch (option) {
+            case 'halfwayFade':
+                mainScreen.material.fragmentShader = halfwayFade
+                break;
+            case 'crosswarp':
+                mainScreen.material.fragmentShader = crosswarp
+                break;
+            case 'morph':
+                mainScreen.material.fragmentShader = morph
+                break;
+            case 'colordistance':
+                mainScreen.material.fragmentShader = colordistance
+                break;
+            case 'cube':
+                mainScreen.material.fragmentShader = cubeee
+                break;
+            case 'wave':
+                mainScreen.material.fragmentShader = wave
+                break;
+            default:
+                break;
+        }
+
+        mainScreen.material.needsUpdate = true
+    })
+
+gui.add(settings, 'progress', 0, 1).step(0.01)
 
 /**
  * Main Scene
@@ -28,7 +71,7 @@ mainCamera.position.z = cameraZ;
 /**
  * Main Screen
  */
- let mainScreenUniforms = {
+let mainScreenUniforms = {
     'time': {
         value: 1.5
     },
@@ -43,13 +86,34 @@ mainCamera.position.z = cameraZ;
     },
     'progress': {
         value: 0
+    },
+    'strength': {
+        value: 0.5
+    },
+    'power': {
+        value: 5.0
+    },
+    'persp': {
+        value: 0.7
+    },
+    'unzoom': {
+        value: 0.3
+    },
+    'reflection': {
+        value: 0.4
+    },
+    'floating': {
+        value: 3.0
+    },
+    'intensity': {
+        value: 100.0
     }
-};
+}
 
 mainScreenUniforms['texture1'].value.wrapS = mainScreenUniforms['texture1'].value.wrapT = THREE.RepeatWrapping;
 mainScreenUniforms['texture2'].value.wrapS = mainScreenUniforms['texture2'].value.wrapT = THREE.RepeatWrapping;
 
-const mainScreenGeometry = new THREE.PlaneBufferGeometry(10, 10)
+const mainScreenGeometry = new THREE.PlaneBufferGeometry(20, 20)
 //  const mainScreenMaterial = new THREE.MeshBasicMaterial({
 //      map: texture2.texture,
 //      color: '#ffffff',
@@ -58,7 +122,7 @@ const mainScreenGeometry = new THREE.PlaneBufferGeometry(10, 10)
 const mainScreenMaterial = new THREE.ShaderMaterial({
     uniforms: mainScreenUniforms,
     vertexShader: document.getElementById('vertexShader').textContent,
-    fragmentShader: document.getElementById('fragmentShader').textContent,
+    fragmentShader: halfwayFade,
 });
 const mainScreen = new THREE.Mesh(mainScreenGeometry, mainScreenMaterial)
 mainScreen.rotation.set(Math.PI * 1, Math.PI * 1, 0)
@@ -69,54 +133,12 @@ mainScene.add(mainScreen)
 /**
  * Scene 1
  */
-const scene1 = new THREE.Scene()
-scene1.background = new THREE.Color( 0xffffff );
-const camera1 = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 3000);
-camera1.position.z = cameraZ;
-const cubeGeometry = new THREE.BoxBufferGeometry(2.5, 2.5, 2.5)
-const cubeMaterial = new THREE.MeshStandardMaterial({
-    color: 0xff0000,
-    roughness: 0.5,
-    metalness: 0.5,
-})
-const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
-cube.rotation.set(Math.PI * 1.25, Math.PI * 1.25, 0)
-scene1.add(cube)
-
-const ambientLight1 = new THREE.AmbientLight(0xffffff, .50)
-scene1.add(ambientLight1)
-
-
+const { scene1, camera1 } = generateScene1({ sizes, cameraZ })
 
 /**
  * Scene 2
  */
-const scene2 = new THREE.Scene()
-const camera2 = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 3000);
-camera2.position.z = cameraZ;
-const icosahedronGeometry = new THREE.IcosahedronBufferGeometry(1, 2)
-const icosahedronMaterial = new THREE.MeshStandardMaterial({
-    color: 0x0000ff,
-    roughness: 0.5,
-    metalness: 0.5,
-})
-const icosahedron = new THREE.Mesh(icosahedronGeometry, icosahedronMaterial)
-icosahedron.rotation.set(Math.PI * 1.25, Math.PI * 1.25, 0)
-scene2.add(icosahedron)
-
-const ambientLight2 = new THREE.AmbientLight(0xffffff, 0.2)
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8)
-directionalLight.castShadow = true
-directionalLight.shadow.mapSize.set(1024, 1024)
-directionalLight.shadow.camera.far = 15
-directionalLight.shadow.camera.left = -7
-directionalLight.shadow.camera.top = 7
-directionalLight.shadow.camera.right = 7
-directionalLight.shadow.camera.bottom = -7
-directionalLight.position.set(5, 5, 5)
-
-scene2.add(directionalLight)
-scene2.add(ambientLight2)
+const { scene2, camera2 } = generateScene2({ sizes, cameraZ })
 
 
 
@@ -192,21 +214,23 @@ const tick = () => {
     renderer.setRenderTarget(null)
     renderer.render(mainScene, mainCamera)
 
-    // Transition between scene1 and scene2
-    if (mainScreenUniforms.toggle === false) {
-        mainScreenUniforms.progress.value += deltaTime
-    } else {
-        mainScreenUniforms.progress.value -= deltaTime
-    }
+    mainScreenUniforms.progress.value = settings.progress
 
-    if (mainScreenUniforms.progress.value > 1) {
-        mainScreenUniforms.toggle = true
-    }
+    // // Transition between scene1 and scene2
+    // if (mainScreenUniforms.toggle === false) {
+    //     mainScreenUniforms.progress.value += deltaTime
+    // } else {
+    //     mainScreenUniforms.progress.value -= deltaTime
+    // }
+
+    // if (mainScreenUniforms.progress.value > 1) {
+    //     mainScreenUniforms.toggle = true
+    // }
 
 
-    if (mainScreenUniforms.progress.value < 0) {
-        mainScreenUniforms.toggle = false
-    }
+    // if (mainScreenUniforms.progress.value < 0) {
+    //     mainScreenUniforms.toggle = false
+    // }
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
