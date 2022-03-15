@@ -110,8 +110,8 @@ let mainScreenUniforms = {
     }
 }
 
-mainScreenUniforms['texture1'].value.wrapS = mainScreenUniforms['texture1'].value.wrapT = THREE.RepeatWrapping;
-mainScreenUniforms['texture2'].value.wrapS = mainScreenUniforms['texture2'].value.wrapT = THREE.RepeatWrapping;
+mainScreenUniforms['texture1'].value.wrapS = mainScreenUniforms['texture1'].value.wrapT = THREE.ClampToEdgeWrapping;
+mainScreenUniforms['texture2'].value.wrapS = mainScreenUniforms['texture2'].value.wrapT = THREE.ClampToEdgeWrapping;
 
 const mainScreenGeometry = new THREE.PlaneBufferGeometry(20, 20)
 //  const mainScreenMaterial = new THREE.MeshBasicMaterial({
