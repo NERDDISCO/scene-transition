@@ -3,7 +3,7 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack --config ./bundler/webpack.prod.js",
-    "publish": "git subtree push --prefix dist origin gh-pages",
+    "publish": "npm run build && git add . && git commit -m 'chore(release): new build' && git push origin main && git subtree push --prefix dist origin gh-pages",
     "dev": "webpack serve --config ./bundler/webpack.dev.js"
   },
   "dependencies": {
